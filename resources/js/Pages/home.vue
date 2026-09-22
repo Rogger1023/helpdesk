@@ -5,18 +5,18 @@ const projeto = 'Helpdesk de TI';
 <template>
     <main>
         <h1>{{ projeto }}</h1>
-        <div> 
-            <p>
-                Sistema de Controle de Chamados
-            </p>
-            <p>
-                 Projeto desenvolvido com:
-            </p>
-                <div> Laravel </div>
-                <div> Vue.js </div>
-                <div> Inertia.js </div>
-                <div> MySQL </div>
-                <div> Docker / Laravel Sail </div>         
-         </div>
+        <p>
+            Sistema de Controle de Chamados
+        </p>
+        <p>
+            Projeto desenvolvido com:
+        </p>
+        <ul>
+            <li>Laravel</li>
+            <li>Vue.js</li>
+            <li>Inertia.js</li>
+            <li>MySQL</li>
+            <li>Docker / Laravel Sail</li>
+        </ul>
     </main>
 </template>
