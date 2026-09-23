@@ -1,0 +1,15 @@
+[90m= [39m[34;4mIlluminate\Database\Eloquent\Collection[39;24m {#8240
+    [34mall[39m: [
+      [34;4mApp\Models\Chamado[39;24m {#8244
+        [34mid[39m: [35m1[39m,
+        [34mtitulo[39m: [32m"[39m[32mImpressora não funciona[39m[32m"[39m,
+        [34mdescricao[39m: [32m"[39m[32mA impressora do setor administrativo não está imprimindo.[39m[32m"[39m,
+        [34mprioridade[39m: [32m"[39m[32mmedia[39m[32m"[39m,
+        [34mstatus[39m: [32m"[39m[32maberto[39m[32m"[39m,
+        [34mresponsavel_id[39m: [35m2[39m,
+        [34maberto_em[39m: [32m"[39m[32m2026-09-22 22:42:41[39m[32m"[39m,
+        [34mcreated_at[39m: [32m"[39m[32m2026-09-22 22:42:41[39m[32m"[39m,
+        [34mupdated_at[39m: [32m"[39m[32m2026-09-22 22:42:41[39m[32m"[39m,
+      },
+    ],
+  }
