@@ -47,4 +47,59 @@ class ChamadoController extends Controller
             'chamados' => $chamados,
         ]);
     }
+
+    public function show(Chamado $chamado): Response
+    {
+        $chamado->load('responsavel');
+
+        return Inertia::render('Chamados/Show', [
+            'chamado' => $chamado,
+        ]);
+    }
+
+    public function edit(Chamado $chamado): Response 
+    {
+        $responsaveis = Responsavel::all();
+
+        return Inertia::render('Chamados/Edit',[
+            'chamado' => $chamado,
+            'responsaveis' => $responsaveis,
+        ]);
+    }
+
+    public function update(Request $request,Chamado $chamado): RedirectResponse
+    {
+    $dados = $request->validate([
+        'titulo' => [
+            'required',
+            'string',
+            'max:255',
+        ],
+
+        'descricao' => [
+            'required',
+            'string',
+        ],
+
+        'prioridade' => [
+            'required',
+            'in:baixa,media,alta',
+        ],
+
+        'status' => [
+            'required',
+            'in:aberto,em_andamento,resolvido,fechado',
+        ],
+
+        'responsavel_id' => [
+            'required',
+            'exists:responsaveis,id',
+        ],
+    ]);
+
+    $chamado->update($dados);
+
+    return redirect()
+        ->route('chamados.show', $chamado);
+    }
 }

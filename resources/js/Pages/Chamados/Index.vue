@@ -44,6 +44,7 @@
                     <th>Status</th>
                     <th>Aberto em </th>
                     <th>Responsável</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
 
@@ -51,17 +52,26 @@
                 <tr
                     v-for="chamado in chamados"
                     :key="chamado.id"
-                    v-if="chamado.length > 0"
                 >
                     <td>{{ chamado.id }}</td>
-                    <td>{{ chamado.titulo }}</td>
+                    <td>
+                        <Link :href="`/chamados/${chamado.id}`">
+                            {{ chamado.titulo }}
+                        </Link>
+                    </td>
                     <td>{{formatarPrioridade( chamado.prioridade )}}</td>
                     <td>{{formatarStatus( chamado.status )}}</td>
                     <td>{{ chamado.aberto_em }}</td>
                     <td>{{ chamado.responsavel.nome }}</td>
+                    <td>
+                        <Link :href="`/chamados/${chamado.id}`">
+                            Visualizar
+                        </Link>
+                        <Link :href="`/chamados/${chamado.id}/editar`">
+                            Editar
+                        </Link>             
+                    </td>
                 </tr>
-
-                <p v-else> Nenhum chamado listado</p>
             </tbody>
         </table>
     </main>

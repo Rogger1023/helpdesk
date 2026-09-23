@@ -15,3 +15,12 @@ Route::post('/chamados', [ChamadoController::class, 'store'])
 
 Route::get('/chamados',[ChamadoController::class,'index'])
     ->name('chamados.index');
+
+Route::get('/chamados/{chamado}', [ChamadoController::class, 'show'])
+    ->name('chamados.show');
+
+Route::get('/chamados/{chamado}/editar', [ChamadoController::class, 'edit'])
+    ->name('chamados.edit');
+
+Route::put('/chamados/{chamado}', [ChamadoController::class, 'update'])
+    ->name('chamados.update');
