@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 
 class ChamadoController extends Controller
 {
+
     public function create(): Response
     {
         $responsaveis = Responsavel::all();
@@ -34,6 +35,16 @@ class ChamadoController extends Controller
 
         Chamado::create($dados);
 
-        return redirect()->route('chamados.create');
+        return redirect()->route('chamados.index');
+    }
+    public function index(): Response
+    {
+        $chamados = Chamado::with('responsavel')
+            ->latest()
+            ->get();
+
+        return Inertia::render('Chamados/Index', [
+            'chamados' => $chamados,
+        ]);
     }
 }

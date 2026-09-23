@@ -12,3 +12,6 @@ Route::get('/chamados/criar', [ChamadoController::class, 'create'])
 
 Route::post('/chamados', [ChamadoController::class, 'store'])
     ->name('chamados.store');
+
+Route::get('/chamados',[ChamadoController::class,'index'])
+    ->name('chamados.index');
