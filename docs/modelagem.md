@@ -54,3 +54,5 @@ Considerei como concluidos:
 
 Essa definição será utilizada futuramente na distribuição 
 automatica de chamados.   
+
+Para fins de distribuição automática, chamados com status aberto ou em_andamento são considerados não concluídos. Chamados resolvido ou fechado não participam da contagem. Em caso de empate, será selecionado o responsável com menor ID.

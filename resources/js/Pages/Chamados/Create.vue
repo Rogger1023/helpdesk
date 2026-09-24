@@ -9,6 +9,7 @@ const form = useForm({
     titulo: '',
     descricao: '',
     prioridade: 'baixa',
+    atribuicao: 'manual',
     responsavel_id: '',
 });
 
@@ -64,7 +65,20 @@ const submit = () => {
                 </p>
             </div>
 
+
             <div>
+                <p>Forma de atribuição</p>
+                <label>
+                    <input v-model="form.atribuicao" type="radio" value="manual">
+                    Manual
+                </label>
+                <label>
+                    <input v-model="form.atribuicao" type="radio" value="automatica">
+                    Automática
+                </label>
+            </div>
+
+            <div v-if="form.atribuicao === 'manual'">
                 <label for="responsavel">
                     Responsável
                 </label>
@@ -85,14 +99,20 @@ const submit = () => {
                         {{ responsavel.nome }}
                     </option>
                 </select>
+
                 <p v-if="form.errors.responsavel_id">
                     {{ form.errors.responsavel_id }}
                 </p>
             </div>
+            <p v-else>
+                O sistema escolherá automaticamente o responsável
+                com menos chamados em aberto.
+            </p>
 
             <button type="submit">
                 Abrir chamado
             </button>
+            <pre>{{ form.errors }}</pre>
 
         </form>
     </main>
