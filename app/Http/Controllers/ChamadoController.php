@@ -12,6 +12,8 @@ use App\Enums\PrioridadeChamado;
 use App\Enums\StatusChamado;
 use Illuminate\Validation\Rule;
 use App\Services\DistribuidorChamados;
+use App\Http\Requests\StoreChamadoRequest;
+use App\Http\Requests\UpdateChamadoRequest;
 
 
 class ChamadoController extends Controller
@@ -27,38 +29,11 @@ class ChamadoController extends Controller
     }
 
     public function store(
-    Request $request,
+    StoreChamadoRequest $request,
     DistribuidorChamados $distribuidor
     ): RedirectResponse
     {
-        $dados = $request->validate([
-            'titulo' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-
-            'descricao' => [
-                'required',
-                'string',
-            ],
-
-            'prioridade' => [
-                'required',
-                Rule::enum(PrioridadeChamado::class),
-            ],
-
-            'atribuicao' => [
-                'required',
-                'in:manual,automatica',
-            ],
-
-            'responsavel_id' => [
-                'nullable',
-                'required_if:atribuicao,manual',
-                'exists:responsaveis,id',
-            ],
-        ]);
+        $dados = $request->validated();
 
         if ($dados['atribuicao'] === 'automatica') {
             $responsavel = $distribuidor->escolherResponsavel();
@@ -67,10 +42,11 @@ class ChamadoController extends Controller
         }
 
         unset($dados['atribuicao']);
+
         Chamado::create($dados);
 
-    return redirect()->route('chamados.index');
-}
+        return redirect()->route('chamados.index');
+    }
     public function index(Request $request): Response
     {
         $query = Chamado::query()
@@ -156,39 +132,16 @@ class ChamadoController extends Controller
         ]);
     }
 
-    public function update(Request $request,Chamado $chamado): RedirectResponse
+    public function update(
+    UpdateChamadoRequest $request,
+    Chamado $chamado
+    ): RedirectResponse
     {
-    $dados = $request->validate([
-        'titulo' => [
-            'required',
-            'string',
-            'max:255',
-        ],
+        $chamado->update(
+            $request->validated()
+        );
 
-        'descricao' => [
-            'required',
-            'string',
-        ],
-
-        'prioridade' => [
-            'required',
-            Rule::enum(PrioridadeChamado::class)
-        ],
-
-        'status' => [
-            'required',
-            Rule::enum(StatusChamado::class),
-        ],
-
-        'responsavel_id' => [
-            'required',
-            'exists:responsaveis,id',
-        ],
-    ]);
-
-    $chamado->update($dados);
-
-    return redirect()
-        ->route('chamados.show', $chamado);
+        return redirect()
+            ->route('chamados.show', $chamado);
     }
 }

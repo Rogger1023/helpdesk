@@ -1,6 +1,9 @@
 <script setup>
 import { Link, useForm } from '@inertiajs/vue3';
 
+import AppLayout from '../../Layouts/AppLayout.vue';
+import ChamadoForm from '../../Components/Chamados/ChamadoForm.vue';
+
 const props = defineProps({
     chamado: Object,
     responsaveis: Array,
@@ -18,66 +21,51 @@ const submit = () => {
     form.put(`/chamados/${props.chamado.id}`);
 };
 </script>
+
 <template>
-    <main>
-        <h1>Editar chamado #{{ chamado.id }}</h1>
-        <form @submit.prevent="submit">
-            <div>
-                <label for="titulo">Título</label>
-                <input id="titulo" v-model="form.titulo" type="text">
-                <p v-if="form.errors.titulo">
-                    {{ form.errors.titulo }}
-                </p>
-            </div>
-            <div>
-                <label for="descricao">Descrição</label>
-                <textarea id="descricao" v-model="form.descricao"></textarea>
-                <p v-if="form.errors.descricao">
-                    {{ form.errors.descricao }}
-                </p>
-            </div>
-            <div>
-                <label for="prioridade">Prioridade</label>
-                <select v-model="form.prioridade" id="prioridade">
-                    <option value="baixa">Baixa</option>
-                    <option value="media">Média</option>
-                    <option value="alta">Alta</option>
-                </select>
-                <p v-if="form.errors.prioridade">
-                    {{ form.errors.prioridade }}
-                </p>
-            </div>
-            <div>
-                <label for="status">Status</label>
-                <select v-model="form.status" id="status">
-                    <option value="aberto">Aberto</option>
-                    <option value="em_andamento">Em andamento</option>
-                    <option value="resolvido">Resolvido</option>
-                    <option value="fechado">Fechado</option>
-                </select>
-            </div>
-            <div>
-                <label for="responsavel">Responsável</label>
-                <select v-model="form.responsavel_id" id="responsavel">
-                    <option 
-                    v-for="responsavel in responsaveis"
-                    :key="responsavel.id"
-                    :value="responsavel.id"
+    <AppLayout>
+        <div class="mb-6">
+            <Link
+                :href="`/chamados/${chamado.id}`"
+                class="text-sm text-gray-600 hover:text-gray-900 hover:underline"
+            >
+                ← Voltar para o chamado
+            </Link>
+
+            <h1 class="mt-3 text-3xl font-bold text-gray-900">
+                Editar chamado #{{ chamado.id }}
+            </h1>
+
+            <p class="mt-1 text-gray-600">
+                Altere as informações do chamado.
+            </p>
+        </div>
+
+        <div class="max-w-3xl rounded-lg border border-gray-200 bg-white p-6">
+            <form @submit.prevent="submit">
+                <ChamadoForm
+                    :form="form"
+                    :responsaveis="responsaveis"
+                    :edicao="true"
+                />
+
+                <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <button
+                        type="submit"
+                        :disabled="form.processing"
+                        class="w-full rounded-lg bg-gray-900 px-4 py-2 text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                     >
-                        {{ responsavel.nome }}
-                    </option>
-                </select>
-                 <p v-if="form.errors.responsavel_id">
-                    {{ form.errors.responsavel_id }}
-                </p>
-            </div>
-            <button type="submit" 
-            :disabled="form.processing">
-                Salvar alterações
-            </button>
-        </form>
-        <Link :href="`/chamados/${chamado.id}`">
-            Cancelar
-        </Link>
-    </main>
+                        {{ form.processing ? 'Salvando...' : 'Salvar alterações' }}
+                    </button>
+
+                    <Link
+                        href="/chamados"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-center text-gray-700 hover:bg-gray-50 sm:w-auto"
+                    >
+                        Cancelar
+                    </Link>
+                </div>
+            </form>
+        </div>
+    </AppLayout>
 </template>
