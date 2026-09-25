@@ -149,67 +149,110 @@ Para executar o projeto localmente:
 - Docker Desktop
 - Docker Compose
 - Git
-- Composer
 
 Em Windows, é recomendado utilizar WSL2.
 
+PHP e Composer instalados diretamente na máquina são opcionais, pois as dependências também podem ser instaladas utilizando Docker.
+
 ## Instalação
 
-Clone o repositório:
+### 1. Clonar o repositório
 
 ```bash
 git clone https://github.com/Rogger1023/helpdesk.git
 ```
 
-Entre na pasta do projeto:
+Entre na pasta:
 
 ```bash
 cd helpdesk
 ```
 
-Instale as dependências PHP:
+### 2. Instalar as dependências PHP
+
+Caso PHP e Composer estejam instalados na máquina:
 
 ```bash
 composer install
 ```
 
-Crie o arquivo de ambiente:
+Caso não estejam instalados, é possível utilizar a imagem oficial do Composer através do Docker:
+
+```bash
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$PWD":/app \
+    -w /app \
+    composer:2 \
+    composer install
+```
+
+Após a instalação, o Laravel Sail estará disponível em:
+
+```text
+vendor/bin/sail
+```
+
+### 3. Criar o arquivo de ambiente
 
 ```bash
 cp .env.example .env
 ```
 
-Inicie os containers:
+A configuração padrão utiliza MySQL através do Docker:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=sail
+DB_PASSWORD=password
+```
+
+### 4. Iniciar os containers
 
 ```bash
 ./vendor/bin/sail up -d
 ```
 
-Gere a chave da aplicação:
+Confira o estado dos containers:
+
+```bash
+./vendor/bin/sail ps
+```
+
+> Na primeira inicialização, o MySQL pode levar alguns instantes para criar o banco e ficar disponível.
+>
+> Caso um comando como `artisan migrate` retorne temporariamente `Connection refused`, aguarde o container MySQL ficar saudável e execute o comando novamente.
+
+### 5. Gerar a chave da aplicação
 
 ```bash
 ./vendor/bin/sail artisan key:generate
 ```
 
-Execute as migrations:
+### 6. Executar as migrations
 
 ```bash
 ./vendor/bin/sail artisan migrate
 ```
 
-Popule os responsáveis iniciais:
+### 7. Criar os responsáveis iniciais
 
 ```bash
 ./vendor/bin/sail artisan db:seed --class=ResponsavelSeeder
 ```
 
-Instale as dependências do frontend:
+O Seeder cria três responsáveis iniciais para utilização no sistema.
+
+### 8. Instalar as dependências do frontend
 
 ```bash
 ./vendor/bin/sail npm install
 ```
 
-Inicie o Vite:
+### 9. Iniciar o Vite
 
 ```bash
 ./vendor/bin/sail npm run dev
@@ -221,20 +264,30 @@ A aplicação poderá ser acessada em:
 http://localhost
 ```
 
+A listagem de chamados está disponível em:
+
+```text
+http://localhost/chamados
+```
+
 ## Possível conflito com a porta do MySQL
 
-Caso a porta `3306` já esteja sendo utilizada pela máquina host, é possível alterar apenas a porta exposta pelo Docker no arquivo `.env`:
+Por padrão, o MySQL é exposto na porta `3306`.
+
+Caso essa porta já esteja sendo utilizada pela máquina host, altere no `.env`:
 
 ```env
 FORWARD_DB_PORT=3307
 ```
 
-A comunicação interna do Laravel com o container MySQL continua utilizando:
+A comunicação interna entre Laravel e MySQL continua utilizando:
 
 ```env
 DB_HOST=mysql
 DB_PORT=3306
 ```
+
+Ou seja, `DB_PORT` não precisa ser alterado.
 
 ## Testes
 
@@ -244,7 +297,7 @@ Para executar todos os testes automatizados:
 ./vendor/bin/sail artisan test
 ```
 
-Atualmente os testes verificam cenários como:
+Os testes cobrem cenários como:
 
 - Criação manual de chamado
 - Validação de título obrigatório
@@ -255,7 +308,7 @@ Atualmente os testes verificam cenários como:
 
 ## Build de produção
 
-Para gerar os arquivos do frontend para produção:
+Para gerar os arquivos finais do frontend:
 
 ```bash
 ./vendor/bin/sail npm run build
@@ -271,6 +324,10 @@ app/
 │   └── Requests/
 ├── Models/
 └── Services/
+
+database/
+├── migrations/
+└── seeders/
 
 resources/js/
 ├── Components/
@@ -295,6 +352,6 @@ Durante o desenvolvimento foram utilizados alguns princípios para manter o proj
 - Service para regras de negócio
 - Eager Loading para relacionamentos
 - Testes automatizados para regras importantes
-- Interface responsiva com Tailwind CSS
+- Interface responsiva utilizando Tailwind CSS
 
 O objetivo foi priorizar clareza, manutenção e funcionamento das regras de negócio sem adicionar complexidade desnecessária.
